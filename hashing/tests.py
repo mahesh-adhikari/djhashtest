@@ -4,6 +4,7 @@ from .forms import HashForm
 import hashlib
 from .models import Hash
 from django.core.exceptions import ValidationError
+import time
 
 class FunctionalTestCase(TestCase):
   def setUp(self):
@@ -23,6 +24,14 @@ class FunctionalTestCase(TestCase):
     text.send_keys('hello')
     self.browser.find_element_by_name("submit").click()
     self.assertIn('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824', self.browser.page_source)
+
+  def test_hash_ajax(self):
+    self.browser.get('http://localhost:8000')
+    text = self.browser.find_element_by_id("id_text")
+    text.send_keys('hello')
+    time.sleep(5)  # wait for AJAX
+    self.assertIn('2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824', self.browser.page_source)
+
 
 class UnitTestCase(TestCase):
     def test_home_homepage_template(self):
